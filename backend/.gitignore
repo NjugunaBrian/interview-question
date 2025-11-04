@@ -1,0 +1,48 @@
+# Node modules
+node_modules/
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# Build output
+dist/
+build/
+.cache/
+.next/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Redis dump
+dump.rdb
+*.rdb
+
+# Coverage
+coverage/
+
+# Temporary files
+*.tmp
+*.temp
+*.swp
+*.swo
+
+# IDE files
+.vscode/
+.idea/
+
+# TypeScript
+*.tsbuildinfo
+
+# Optional - DB credentials/cache
+.pgdata/
