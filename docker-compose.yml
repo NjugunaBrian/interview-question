@@ -1,0 +1,57 @@
+version: "3.9"
+
+
+services: 
+  postgres:
+    image: postgres:17
+    container_name: postgres_db
+    restart: always
+    environment:
+        POSTGRES_USER: postgres
+        POSTGRES_PASSWORD: millionaire
+        POSTGRES_DB: TaskMgment
+    volumes: 
+      - ./backend/init.sql:/docker-entrypoint-initdb.d/init.sql
+      #- postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5050:5432"
+     
+
+  redis:
+    image: redis:latest
+    container_name: redis_cache
+    restart: always
+    ports: 
+      - "6379:6379"
+
+  backend:
+    build: 
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: backend
+    restart: always
+    depends_on:
+      - postgres
+      - redis
+    ports: 
+      - "5000:5000"  
+    env_file: 
+      - ./backend./.env
+    command: ["node", "index.js"]
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: react_frontend
+    restart: always
+    ports: 
+      - "5173:80" #Host:Container
+    depends_on:
+      - backend    
+     
+
+volumes: 
+  postgres_data:            
+
+
