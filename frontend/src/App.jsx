@@ -7,10 +7,12 @@ import { socket } from "./services/socket";
 function App() {
   const [tasks, setTasks] = useState([]);
   const [description, setDescription] = useState("");
+  const [, setNotifications] = useState([]);
 
   async function loadTasks(){
     const data = await getTasks();
-    setTasks(data);
+    console.log("Fetched tasks:", data);
+    setTasks(Array.isArray(data) ? data : []);
   }
 
   async function handleAddTask(e){
@@ -34,15 +36,43 @@ function App() {
   useEffect(() => {
     loadTasks();
     // Listeners for socket events
+    if(Notification.permission === 'default' || Notification.permission === 'denied'){
+      Notification.requestPermission().then((permission) => {
+        if(permission === 'granted'){
+          console.log("Notification permission granted");
+        } else {
+          console.log("Notification permission denied");
+        }
+      })
+    }
     socket.on("taskCreated", (task) => {
+      if(Notification.permission === "granted"){
+        new Notification("New notification", {
+          body: task.description,
+          icon: 'https://via.placeholder.com/50',
+        });
+      }
+
       setTasks((prev) => [...prev, task]);
+      setNotifications((prev) => [...prev, task]);
     });
 
     socket.on("taskUpdated", (updatedTask) => {
+      if(Notification.permission === "granted"){
+        new Notification("New notification", {
+          body: updatedTask.description,
+          icon: 'https://via.placeholder.com/50',
+        });
+      }
       setTasks((prev) => prev.map((task) => (task.id === updatedTask.id ? updatedTask : task)));
     });
 
     socket.on("taskDeleted", (id) => {
+      if(Notification.permission === "granted"){
+        new Notification("New notification", {
+          icon: 'https://via.placeholder.com/50',
+        });
+      }
       setTasks((prev) => prev.filter((task) => task.id !== id));
     });
 

@@ -19,7 +19,7 @@ export default (io) => {
             // clear cache
             await redisClient.del("tasks");
             //Emit real-time event
-            io.emit("taskCreated", newTask);
+            io.emit("taskCreated", { newTask });
             res.json(newTask);
         } catch (err) {
             console.error(err);
@@ -31,11 +31,14 @@ export default (io) => {
     router.get("/", async (req, res) => {
         try {
             const cachedTasks = await redisClient.get("tasks");
+            console.log("CachedTasks", cachedTasks);
             if (cachedTasks) {
                 return res.json(JSON.parse(cachedTasks));
             }
             const result = await pool.query(`SELECT * FROM tasks ORDER BY id DESC`);
+            console.log("Result", result);
             const tasks = result.rows;
+            console.log("Tasks", tasks);
 
             //Store in redis for 30 seconds
             await redisClient.setEx("tasks", 30, JSON.stringify(tasks));
