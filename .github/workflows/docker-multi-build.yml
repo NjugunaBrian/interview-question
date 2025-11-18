@@ -46,3 +46,4 @@ jobs:
         run: |
           IMAGE=${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.BACKEND_IMAGE_NAME }}
           docker push $IMAGE:latest
+
