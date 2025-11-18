@@ -7,9 +7,9 @@ services:
     container_name: postgres_db
     restart: always
     environment:
-        POSTGRES_USER: postgres
-        POSTGRES_PASSWORD: millionaire
-        POSTGRES_DB: TaskMgment
+        POSTGRES_USER: ${PGUSER}
+        POSTGRES_PASSWORD: ${PGPASSWORD}
+        POSTGRES_DB: ${PGDATABASE}
     volumes: 
       - ./backend/init.sql:/docker-entrypoint-initdb.d/init.sql
       #- postgres_data:/var/lib/postgresql/data
@@ -35,8 +35,13 @@ services:
       - redis
     ports: 
       - "5000:5000"  
-    env_file: 
-      - ./backend./.env
+    environment:
+        POSTGRES_USER: ${PGUSER}
+        POSTGRES_PASSWORD: ${PGPASSWORD}
+        POSTGRES_DB: ${PGDATABASE}
+        REDIS_URL: ${REDIS_URL}
+        PORT: ${PORT}
+        NODE_ENV: ${NODE_ENV}
     command: ["node", "index.js"]
 
   frontend:

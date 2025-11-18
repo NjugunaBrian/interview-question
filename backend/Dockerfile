@@ -29,9 +29,6 @@ COPY --from=build /app/routes ./routes
 # Install only production dependencies
 RUN npm install --omit=dev
 
-# Copy .env file (optional - can also use Docker secrets or Compose env)
-COPY .env .env
-
 # Expose app port
 EXPOSE 5000
 
